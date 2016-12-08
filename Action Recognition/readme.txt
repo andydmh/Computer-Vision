@@ -1,2 +1,2 @@
 Objective: Recognize actions from videos using machine learning classifiers and suitable features.
-Classifiers:
+Classifiers: SVM and Neural Networks
