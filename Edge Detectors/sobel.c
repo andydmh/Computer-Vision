@@ -8,7 +8,14 @@
         int outpicy[256][256];
         int maskx[3][3] = {{-1,0,1},{-2,0,2},{-1,0,1}};
         int masky[3][3] = {{1,2,1},{0,0,0},{-1,-2,-1}};
-        double ival[256][256];//,maxival; maxval is not used because instead of making the pixel values proportional to the original ones, the values of the pixels will be either 0 or 255 depending on wether its value is bellow or above the treshold (to make edges seem more sharp as mentioned in the notes). Also there is no need to worry about a pixel value greather than 255. Another aproach could be to apply the treshold after appling the formula (ival[i][j] / maxival) * 255 (however the it seems more intuitive to apply the previous approach) 
+	/*
+		maxval is not used because instead of making the pixel values proportional to the original ones, 
+		the values of the pixels will be either 0 or 255 depending on wether its value is bellow or above 
+		the treshold (to make edges seem more sharp as mentioned in the notes). Also there is no need to 
+		worry about a pixel value greather than 255. Another aproach could be to apply the treshold after 
+		appling the formula (ival[i][j] / maxival) * 255 (however the it seems more intuitive to apply the previous approach) 
+	*/
+        double ival[256][256];
 
 struct rec
 	{
@@ -76,30 +83,18 @@ char **argv;
              outpicy[i][j] = sum2;
           }
         }
-		
-        //maxival = 0;
+
         for (i=mr;i<256-mr;i++)
         { for (j=mr;j<256-mr;j++)
           {
              ival[i][j]=sqrt((double)((outpicx[i][j]*outpicx[i][j]) +
                                       (outpicy[i][j]*outpicy[i][j])));
-             //if (ival[i][j] > maxival)
-               // maxival = ival[i][j];
 
            }
         }
 
 
-
-		//headers	
-		//fprintf(fo1, "P5\n");
-		//fprintf(fo1, "%d %d\n", 256, 256);
-		//fprintf(fo1, "255\n");
 		fwrite(&my_rec, sizeof(struct rec), 1,fo1);
-
-		//fprintf(fo2, "P5\n");
-		//fprintf(fo2, "%d %d\n", 256, 256);
-		//fprintf(fo2, "255\n");
 		fwrite(&my_rec, sizeof(struct rec), 1,fo2);
 
         for (i=0;i<256;i++)
@@ -107,16 +102,15 @@ char **argv;
             {
 			
 			 if(ival[i][j] > hi_treshold)
-			 	cur_hi = 255;//(ival[i][j] / maxival) * 255;
+			 	cur_hi = 255;
 			 else
 				cur_hi = 0;
 
 			 if(ival[i][j] > low_treshold)
-			 	cur_low = 255;//(ival[i][j] / maxival) * 255;
+			 	cur_low = 255;
 			 else
 				cur_low = 0;
-
-             //ival[i][j] = (ival[i][j] / maxival) * 255;            
+       
              fprintf(fo1,"%c",(char)((int)(cur_hi)));
 			 fprintf(fo2,"%c",(char)((int)(cur_low)));
              
