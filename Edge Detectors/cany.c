@@ -100,21 +100,18 @@ char **argv;
              }
              Xoutpic[i][j] = Xsum;
              Youtpic[i][j] = Ysum;
-              
-             //Xconv[i][j] = Xsum;
-              //Yconv[i][j] = Ysum;
           }
         }
     
-    maxval = 0;//not sure if needed
+    maxval = 0;
     for (i=mr;i<256-mr;i++)
     {
         for (j=mr;j<256-mr;j++)
         {
             ival[i][j]=sqrt((double)((Xoutpic[i][j]*Xoutpic[i][j]) + (Youtpic[i][j]*Youtpic[i][j])));
             
-            if (ival[i][j] > maxival)//not sure
-                maxival = ival[i][j];// not sure
+            if (ival[i][j] > maxival)
+                maxival = ival[i][j];
         }
     }
     
@@ -138,20 +135,18 @@ char **argv;
         
     }
     }
-    //ok----------Part 1---------
+    //----------Part 1---------
         
     for(i=mr;i<256-mr;i++)
     {
         
         for(j = mr;j<256-mr;j++)
         {
-            //printf("i = %d j = %d\n", i, j);
             if(Xoutpic[i][j] == 0.0)
             {
                 Xoutpic[i][j] = 0.00001;
             }
             
-            //printf("Xgrad = %f Ygrad = %f\n", Xoutpic[i][j], Youtpic[i][j]);
             slope = Youtpic[i][j]/ Xoutpic[i][j];
             
             if((slope <= 0.4142) && (slope > -0.4142))
@@ -207,9 +202,7 @@ char **argv;
         
     }
     }
-    //----------------------------Part 2
-    
-    //Starting part 4---------------------------------
+    //----------------Part 2--------------------
     
     for(i = 0; i < 256; i++)
     {
@@ -242,9 +235,7 @@ char **argv;
     HI = (sum -1)/numbAbHi;
     LO = 0.35 * HI;
     
-    //Part 4 is done--------------------
-    
-    //Starting part 3----------------------
+    //--------------Part 4--------------------
     
     for(i = 0; i < 256; i++)
     {
@@ -309,6 +300,6 @@ char **argv;
         
     }
     }
-    //Done part3 ------------------
+    //------------- Part3 ------------------
     
 }
