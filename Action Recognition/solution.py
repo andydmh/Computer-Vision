@@ -103,30 +103,21 @@ def generic_experiment(video_paths, which_classifier, feature_extractor, f_extra
 	categories = []
 	features = []
 	
-	#count = 0#delete
 	for category in video_paths:
 		category_videos = video_paths[category]
 	
 		for video in category_videos:
-			#print (category, video)
 			categories.append(map_directory_categories_to_numbers(category))
 			features.append(feature_extractor(video, 100))
-		
-		#count += 1#delete
-		#if count == 2:#delete
-			#break#delete
 	
 	if fix_feature_vector_length:
 		features = fix_different_numbers_of_features(features)
 	
 	if plot_data:
-		plot_points(features, categories)	
-	#print features
+		plot_points(features, categories)
 		
 	classifier = get_classifier(which_classifier, features, categories)
 	classifier.execute()
-	
-	#print 'results = ' + str(classifier.get_results())
 	
 	results = {}
 	results['Accuracy'] = str(classifier.get_accuracy())
