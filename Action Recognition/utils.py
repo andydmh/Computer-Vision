@@ -104,7 +104,6 @@ def get_flow_directions_and_magnitudes_helper(video_path, numb_features):
 	
 	gray_im = cvtColor(im, COLOR_BGR2GRAY)
 	
-	#[[[x1,y2]], [[x2,y2]]]
 	corner_cordinates = goodFeaturesToTrack(gray_im, mask=None, **feature_parameters)
 	initial_coordinates = copy.deepcopy(corner_cordinates)
 	new_coordinates = None
@@ -121,20 +120,9 @@ def get_flow_directions_and_magnitudes_helper(video_path, numb_features):
 		#logic
 		new_coordinates, st, err = calcOpticalFlowPyrLK(gray_im, new_gray_im, corner_cordinates, None, **lucas_kanade_parameters)
 		
-		#good_news = new_coordinates[st==1]
-		
 		
 		gray_im = new_gray_im.copy()
 		corner_cordinates = new_coordinates.reshape(-1,1,2)
-	
-	
-	'''print 'Initial Coordinates:'	
-	print initial_coordinates
-	
-	print 'New Coordinates:'
-	print new_coordinates
-	line(initial_image, tuple(initial_coordinates[15][0]), tuple(new_coordinates[15][0]), (0,0,255), 10)
-	imwrite('hello.jpg', initial_image)'''
 	
 	magnitudes = []
 	angles = []
@@ -187,8 +175,6 @@ def flow_feature_extractor_avg_max_min(video_path, numb_features):
 	(magnitudes, angles) = get_flow_directions_and_magnitudes_helper(video_path, numb_features)
 	
 	avg_magnitude = sum(magnitudes)/(len(magnitudes)*1.0)
-	#print 'Heloooooooooooooooo'
-	#print magnitudes
 	max_magnitude = amax(magnitudes) 
 	min_magnitude = amin(magnitudes)
 	
@@ -207,8 +193,6 @@ def flow_feature_extractor_max(video_path, numb_features):
 	(magnitudes, angles) = get_flow_directions_and_magnitudes_helper(video_path, numb_features)
 	
 	#avg_magnitude = sum(magnitudes)/(len(magnitudes)*1.0)
-	#print 'Heloooooooooooooooo'
-	#print magnitudes
 	max_magnitude = amax(magnitudes) 
 	#min_magnitude = amin(magnitudes)
 	
@@ -240,16 +224,8 @@ def get_all_video_paths(ucf_action_dir_path):
 #TODO: Add lables
 #This function creates a scatter graph of points and lable them according to their category
 def plot_points(points, categories):
-	#cat_to_colors = map_categories_to_colors()
-	
-	#xs = []
-	#ys = []
-	#color = []
-	#lab = []
-	
 	dx = {}
 	dy = {}
-	#dz = {}
 	
 	for i in range(len(points)):
 		x = points[i][0]
@@ -265,7 +241,6 @@ def plot_points(points, categories):
 		else:
 			dx[(lab, color)] = [x]
 			dy[(lab, color)] = [y]
-			#dz[(lab, color)] = [random.random()*30]
 	
 	for tup in dx:
 		plt.scatter(dx[tup],dy[tup], c=tup[1], label=tup[0])
@@ -436,9 +411,6 @@ class Classifier(object):
 		while flag:
 			training_features = next[0][0]
 			training_categories = next[0][1]
-			#print training_features
-			#print '*********************************************'
-			#print training_categories
 			testing_features = next[1][0]
 			testing_categories = next[1][1]
 	
@@ -448,10 +420,6 @@ class Classifier(object):
 			#Now try to classify the testig case and keep track
 			prediction = self.predict(testing_features)
 			
-			#print '*****************************************************'
-			#print 'feature vector: ' + str(testing_features)
-			#print 'prediction = ' + str(prediction)
-			#print 'ground truth = ' + str(testing_categories[0])
 			self.confusion_matrix[(testing_categories[0], prediction)] += 1 
 			
 			if prediction == testing_categories[0]:
@@ -477,15 +445,8 @@ class Linear_SVM_Classifier(Classifier):
 	
 	#TODO: Keep implementing this
 	def train(self, training_features, training_categories):
-		#print training_features
-		#print '***********************************'
-		#print training_categories
 		self.classifier = svm.LinearSVC()
 		self.classifier.fit(training_features, training_categories)
-		#print training_features
-		#print '-----------------------------------------------'
-		#print training_categories
-		#print '*********************************************'
 
 	def predict(self, feature_vector):
 		return self.classifier.predict(feature_vector)[0]
@@ -500,15 +461,8 @@ class SVM_Classifier(Classifier):
 	
 	#TODO: Keep implementing this
 	def train(self, training_features, training_categories):
-		#print training_features
-		#print '***********************************'
-		#print training_categories
 		self.classifier = svm.SVC(kernel='linear')
 		self.classifier.fit(training_features, training_categories)
-		#print training_features
-		#print '-----------------------------------------------'
-		#print training_categories
-		#print '*********************************************'
 
 	def predict(self, feature_vector):
 		return self.classifier.predict(feature_vector)[0]
@@ -523,21 +477,11 @@ class Neural_Nets_Classifier(Classifier):
 	
 	#TODO: Keep implementing this
 	def train(self, training_features, training_categories):
-		#print training_features
-		#print '***********************************'
-		#print training_categories
 		self.classifier = MLPClassifier(solver='lbgfs', alpha=1e-5, hidden_layer_sizes=(130, ), random_state=1)
 		self.classifier.fit(training_features, training_categories)
-		#print training_features
-		#print '-----------------------------------------------'
-		#print training_categories
-		#print '*********************************************'
 
 	def predict(self, feature_vector):
 		return self.classifier.predict(feature_vector)[0]
 	
 	def get_parameters(self):
 		return self.classifier.get_params()
-#print flow_feature_extractor('ucf_action/Golf-Swing-Back/001/3283-8_700741.avi',16)
-#print flow_feature_extractor_avg('ucf_action/Golf-Swing-Back/001/3283-8_700741.avi',100)
-#print get_all_video_paths('/home/andy/Documents/ucf_action')
